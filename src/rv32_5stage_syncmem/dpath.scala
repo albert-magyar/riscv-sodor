@@ -108,9 +108,11 @@ class DatPath(implicit conf: SodorConfiguration) extends Module
                   (io.ctl.exe_pc_sel === PC_BRJMP) -> exe_brjmp_target,
                   (io.ctl.exe_pc_sel === PC_JALR)  -> exe_jump_reg_target
                   ))
+
+   val if_pc_to_imem = Mux(!io.ctl.dec_stall && !io.ctl.full_stall, if_pc_next, if_reg_pc) 
    
    // Instruction Memory
-   io.imem.req.bits.addr := if_reg_pc
+   io.imem.req.bits.addr := if_pc_to_imem
    val if_inst = io.imem.resp.bits.data
    
    when (!io.ctl.dec_stall && !io.ctl.full_stall)
@@ -382,11 +384,11 @@ class DatPath(implicit conf: SodorConfiguration) extends Module
    
    
    // datapath to data memory outputs
-   io.dmem.req.valid     := mem_reg_ctrl_mem_val
-   io.dmem.req.bits.addr := mem_reg_alu_out.toUInt
-   io.dmem.req.bits.fcn  := mem_reg_ctrl_mem_fcn
-   io.dmem.req.bits.typ  := mem_reg_ctrl_mem_typ
-   io.dmem.req.bits.data := mem_reg_rs2_data
+   io.dmem.req.valid     := exe_reg_ctrl_mem_val
+   io.dmem.req.bits.addr := exe_alu_out.toUInt
+   io.dmem.req.bits.fcn  := exe_reg_ctrl_mem_fcn
+   io.dmem.req.bits.typ  := exe_reg_ctrl_mem_typ
+   io.dmem.req.bits.data := exe_reg_rs2_data
  
    
    // Time Stamp Counter & Retired Instruction Counter 
