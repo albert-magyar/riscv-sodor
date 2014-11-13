@@ -8,7 +8,8 @@
 # Many different processors are provided. To switch between which processor(s)
 # you would like to build, simply set the $(targets) variable as appropriate. 
 
-all_targets := rv32_1stage rv32_2stage rv32_3stage rv32_5stage rv32_ucode
+all_targets := rv32_5stage_syncmem
+# all_targets := rv32_1stage rv32_2stage rv32_3stage rv32_5stage rv32_5stage_syncmem rv32_ucode
 targets     := $(all_targets)
  
 # To switch between which processor the Makefile would like to build, it will
@@ -32,6 +33,7 @@ install: all
 	$(if $(findstring rv32_2stage,$(targets)),install -s -p -m 755 emulator/rv32_2stage/emulator $(RISCV)/bin/rv32_2stage-emulator)
 	$(if $(findstring rv32_3stage,$(targets)),install -s -p -m 755 emulator/rv32_3stage/emulator $(RISCV)/bin/rv32_3stage-emulator)
 	$(if $(findstring rv32_5stage,$(targets)),install -s -p -m 755 emulator/rv32_5stage/emulator $(RISCV)/bin/rv32_5stage-emulator)
+	$(if $(findstring rv32_5stage_syncmem,$(targets)),install -s -p -m 755 emulator/rv32_5stage_syncmem/emulator $(RISCV)/bin/rv32_5stage_syncmem-emulator)
 	$(if $(findstring rv32_ucode,$(targets)),install -s -p -m 755 emulator/rv32_ucode/emulator $(RISCV)/bin/rv32_ucode-emulator)
 
 dist-src:
@@ -125,6 +127,9 @@ emulator/rv32_3stage/emulator: $(wildcard $(srcDir)/src/common/*.scala) \
 emulator/rv32_5stage/emulator: $(wildcard $(srcDir)/src/common/*.scala) \
                                  $(wildcard $(srcDir)/src/rv32_5stage/*.scala)
 
+emulator/rv32_5stage_syncmem/emulator: $(wildcard $(srcDir)/src/common/*.scala) \
+                                 $(wildcard $(srcDir)/src/rv32_5stage_syncmem/*.scala)
+
 emulator/rv32_ucode/emulator: $(wildcard $(srcDir)/src/common/*.scala) \
                                  $(wildcard $(srcDir)/src/rv32_ucode/*.scala)
 
@@ -139,6 +144,9 @@ emulator/rv32_3stage/emulator-debug: $(wildcard $(srcDir)/src/common/*.scala) \
 
 emulator/rv32_5stage/emulator-debug: $(wildcard $(srcDir)/src/common/*.scala) \
                                  $(wildcard $(srcDir)/src/rv32_5stage/*.scala)
+
+emulator/rv32_5stage_syncmem/emulator-debug: $(wildcard $(srcDir)/src/common/*.scala) \
+                                 $(wildcard $(srcDir)/src/rv32_5stage_syncmem/*.scala)
 
 emulator/rv32_ucode/emulator-debug: $(wildcard $(srcDir)/src/common/*.scala) \
                                  $(wildcard $(srcDir)/src/rv32_ucode/*.scala)
